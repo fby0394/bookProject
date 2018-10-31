@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<!-- namespace:命名空间,将映射文件和接口映射起来 -->
+<mapper namespace="com.cor.aaa.dao.ManagerDao">
+
+    <resultMap id="queryOrgMap" type="com.cor.aaa.entity.Organization">
+        <id column="orgId" property="orgId"/>
+        <result column="orgName" property="orgName"/>
+        <result column="superiorOrg" property="superiorOrg"/>
+        <result column="orgType" property="orgType"/>
+        <association property="supOrg" javaType="com.cor.aaa.entity.Organization" select="selectSupOrg"
+                     column="superiorOrg"/>
+    </resultMap>
+    <select id="selectSupOrg" resultMap="queryOrgMap">
+        select orgId,orgName,superiorOrg,orgType from organization where orgId=#{superiorOrg}
+    </select>
+
+    <resultMap id="queryManMap" type="com.cor.aaa.entity.Manager">
+        <id column="managerId" property="managerId"/>
+        <result property="managerName" column="managerName"/>
+        <result property="pwd" column="pwd"/>
+        <result property="orgId" column="orgId"/>
+        <result property="roleId" column="roleId"/>
+        <result property="phone" column="phone"/>
+        <result property="status" column="status"/>
+        <result property="roleName" column="roleName"/>
+        <result property="hireDate" column="hireDate"/>
+        <result property="termDate" column="termDate"/>
+        <association property="org" select="selectSupOrg" column="orgId"
+                     javaType="com.cor.aaa.entity.Organization"/>
+    </resultMap>
+    <select id="queryAllMan" resultMap="queryManMap">
+        select m.managerId,m.managerName,m.pwd,m.orgId,m.roleId,m.phone,m.status,m.hireDate,m.termDate,r.roleName from
+        manager m left join
+        role r on m.roleId=r.roleId
+        <if test="null!=_parameter">
+            where m.managerName=#{managerName} and m.pwd=#{pwd}
+        </if>
+    </select>
+    <insert id="addMan">
+        insert into manager(managerName,pwd,orgId,roleId,phone,status,hireDate)
+        values(#{managerName},#{pwd},#{orgId},#{roleId},#{phone},0,#{hireDate})
+    </insert>
+</mapper>

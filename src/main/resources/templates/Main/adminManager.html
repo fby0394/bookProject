@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>员工管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link href="../../static/assets/css/bootstrap.min.css" th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" href="../../static/assets/css/ace.min.css" th:href="@{/assets/css/ace.min.css}"/>
+    <link rel="stylesheet" href="../../static/assets/css/font-awesome.min.css"
+          th:href="@{/assets/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" href="../../static/Widget/zTree/css/zTreeStyle/zTreeStyle.css"
+          th:href="@{/Widget/zTree/css/zTreeStyle/zTreeStyle.css}" type="text/css"/>
+    <link href="../../static/Widget/icheck/icheck.css" th:href="@{/Widget/icheck/icheck.css}" rel="stylesheet"
+          type="text/css"/>
+    <!-- 分页样式 -->
+    <link rel="stylesheet" href="../../static/css/dataTables_paginate.css"
+          th:href="@{/css/dataTables_paginate.css}"/>
+
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="../../static/assets/css/font-awesome-ie7.min.css"
+          th:href="@{/assets/css/font-awesome-ie7.min.css}"/>
+    <![endif]-->
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="../../static/assets/css/ace-ie.min.css" th:href="@{/assets/css/ace-ie.min.css}"/>
+    <![endif]-->
+    <script src="../../static/js/jquery-3.3.1.js" th:src="@{/js/jquery-3.3.1.js}" type="text/javascript"></script>
+    <script src="../../static/assets/js/bootstrap.min.js" th:src="@{/assets/js/bootstrap.min.js}"></script>
+    <!-- 提示工具 -->
+    <link rel="stylesheet" type="text/css" href="../../static/css/toastr.css" th:href="@{/css/toastr.css}"/>
+    <script type="text/javascript" src="../../static/js/toastr.min.js" th:src="@{/js/toastr.min.js}"></script>
+
+    <!-- 特定于页面的插件脚本 -->
+    <script src="../../static/assets/js/jquery.dataTables.min.js"
+            th:src="@{/assets/js/jquery.dataTables.min.js}"></script>
+    <script src="../../static/assets/js/jquery.dataTables.bootstrap.js"
+            th:src="@{/assets/js/jquery.dataTables.bootstrap.js}"></script>
+    <script src="../../static/assets/layer/layer.js" th:src="@{/assets/layer/layer.js}" type="text/javascript"></script>
+    <script src="../../static/assets/laydate/laydate.js" th:src="@{/assets/laydate/laydate.js}"
+            type="text/javascript"></script>
+    <script src="../../static/assets/dist/echarts.js" th:src="@{/assets/dist/echarts.js}"></script>
+    <script src="../../static/js/myJS.js" th:src="@{/js/myJS.js}"></script>
+   <script type="text/javascript" th:inline="javascript">
+        $(function () {
+            //使提示信息居中显示
+            toastr.options.positionClass = 'toast-center-center';
+        })
+        var basePath = [[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]];
+
+    </script>
+</head>
+<body>
+<div id="content" class="page-content clearfix">
+    <div id="brand_style">
+        <div class="search_style">
+        </div>
+        <div class="border clearfix">
+       <span class="l_f">
+        <a href="javascript:void(0)" title="添加职工" id="add_Manager" class="btn btn-warning Order_form"><i
+                class="icon-plus"></i>添加职工</a>
+        <a href="javascript:void(0)" class="btn btn-danger"><i class="icon-trash"></i>批量删除</a>
+       </span>
+            <span class="r_f">可管理：<b id="adminManagerB">0</b> 名职工</span>
+        </div>
+        <div>
+            <table class="table table-striped table-bordered table-hover" id="manTable">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        getOrgData();
+        $('#manTable').DataTable({
+            ajax:basePath+"/manager/queryAllMan",
+            //排序的列
+            aaSorting: [1, "desc"],
+            //定义组件显示的位置
+            sDom: "<'row'<'col-sm-3'l><'col-sm-9' <'#orgSelect' 'dataTables_filter'>>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            pagingType: "full_numbers",
+            //使用对象数组，一定要配置columns，告诉 DataTables 每列对应的属性
+            columns: [
+                {
+                    sTitle: "<label><input type='checkbox' class='ace'><span class='lbl'></span></label>",
+                    //设置列对应的属性
+                    data: null,
+                    bSortable: false,
+                    width: "30px",
+                    //此列要添加的类名
+                    sClass: "",
+                    //禁用排序
+                    bSortable: false,
+                    //设置是否隐藏列
+                    bVisible: true,
+                    //设置此列不参与搜索
+                    searchable: false,
+                    //可用于自定义显示的内容
+                    render: function (data, type, row, meta) {
+                        var s = "<label><input type='checkbox' class='ace'><span class='lbl'></span></label>";
+                        return s;
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "mDataProp": "managerId",
+                    "targets": 0,
+                    //此列要添加的类名
+                    "sClass": "center",
+                    //禁用排序
+                    "bSortable": true,
+                    //隐藏列
+                    "bVisible": false
+                },
+                {
+                    "sTitle": "名称",
+                    "mDataProp": "managerName",
+                    "targets": 0,
+                    "sClass": "center",
+                    "bSortable": false
+                },
+                {
+                    "sTitle": "所属机构",
+                    "mDataProp": "org.orgName",
+                    "targets": 0,
+                    "sClass": "center",
+                    "bSortable": false
+                },
+                {
+                    "sTitle": "上级部门",
+                    "mDataProp": "",
+                    "targets": 0,
+                    "sClass": "center",
+                    "bSortable": false,
+                    render: function (data, type, row, meta) {
+                        if (null != row.org.supOrg)
+                            return row.org.supOrg.orgName;
+                        else
+                            return "";
+                    }
+                },
+                {
+                    "sTitle": "全部上级部门",
+                    "mDataProp": "",
+                    "targets": 0,
+                    "sClass": "center",
+                    "bSortable": false,
+                    //隐藏列
+                    "bVisible": false,
+                    render: function (data, type, row, meta) {
+                        var a = "";
+
+                        function checkNull(supOrg) {
+                            if (null != supOrg) {
+                                a += supOrg.orgName;
+                                checkNull(supOrg.supOrg);
+                            }
+                        }
+
+                        if (null != row.org.supOrg)
+                            checkNull(row.org.supOrg);
+                        return a;
+                    }
+                },
+                {
+                    "sTitle": "所属角色",
+                    "mDataProp": "roleName",
+                    "targets": 0,
+                    "sClass": "center",
+                    "bSortable": false
+                },
+                {
+                    "sTitle": "联系手机",
+                    "mDataProp": "phone",
+                    "targets": 0,
+                    "sClass": "center",
+                    "bSortable": false
+                },
+                {
+                    "sTitle": "入职时间",
+                    "mDataProp": "hireDate",
+                    "targets": 0,
+                    "sClass": "center",
+                    "bSortable": false
+                }
+            ],
+            //初始化完成后的回调函数
+            initComplete: function (settings, json) {
+                //给复选框绑定事件
+                $('table th input:checkbox').on('click', function () {
+                    var that = this;
+                    $(this).closest('table').find('tr > td:first-child input:checkbox')
+                        .each(function () {
+                            this.checked = that.checked;
+                            $(this).closest('tr').toggleClass('selected');
+                        });
+
+                });
+                foundSelectOrgDiv();
+                foundOrgSelect($("#orgSelectLi"));
+                $("#orgSelectLi select").attr("onchange", "getOrgSelectText(this)");
+                $("#adminManagerB").html(json.iTotalRecords);
+            }
+
+        });
+
+    })
+
+
+    /**
+     * 创建一个用于查询的div
+     */
+    function foundSelectOrgDiv() {
+        var html = '查询:' +
+            '<input name="" oninput="selectOrgDataTable(this.value)" type="text" class="text_add" id="select" placeholder="输入关键字进行查询"/>' +
+            '选择机构：<span id="orgSelectLi"></span>';
+        $("#orgSelect").html(html);
+    }
+
+
+    /**
+     * 根据传入的内容在表中搜索
+     * @param orgName
+     */
+    function selectOrgDataTable(orgName) {
+        $('#manTable').DataTable().search(orgName).draw();
+    }
+</script>
+
+<!--添加用户图层-->
+<div class="add_menber" id="add_menber_style" style="display:none;padding: 30px;">
+
+    <form id="add_Manager_Form" role="form">
+        <div class="form-group">
+            <label for="manager_name_input">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+            <div style="width: 80%;display: inline-block;">
+                <input id="manager_name_input" type="text" name="managerName" class="form-control" placeholder="请输入姓名"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="manager_phone_input">联系电话：</label>
+            <div style="width: 80%;display: inline-block;">
+                <input id="manager_phone_input" type="text" onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                       maxlength="11" name="phone" class="form-control" placeholder="请输入手机号"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>所属部门：</label>
+            <div style="width: 80%;display: inline-block;">
+                <span style="padding: 5px 9px;" id="orgSelectSpan">
+                </span>
+                <input type="hidden" name="orgId"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>所属角色：</label>
+            <div style="width: 80%;display: inline-block;">
+                <span style="padding: 5px 9px;">
+                <label>
+                    <input type="radio" class="ace" name="roleId" value="1"><span class="lbl">管理员</span>
+                </label>&nbsp;&nbsp;&nbsp;
+                <label>
+                    <input type="radio" class="ace" name="roleId" value="2" checked><span class="lbl">工作人员</span>
+                </label>
+                </span>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        /*用户-添加*/
+        $('#add_Manager').on('click', function () {
+            foundOrgSelect($("#orgSelectSpan"));
+            $("#add_Manager_Form")[0].reset();
+            $("#add_Manager_Form :input[name='orgId']").val($($("#orgSelectSpan select")[0]).val());
+            layer.open({
+                type: 1,
+                title: '添加用户',
+                maxmin: true,
+                shadeClose: true, //点击遮罩关闭层
+                area: ['800px', ''],
+                content: $('#add_menber_style'),
+                btn: ['提交', '取消'],
+                yes: function (index, layero) {
+                    if (managerNameCheck() && phoneCheck()) {
+                        $.ajax({
+                            url: basePath + '/manager/addMan',
+                            data: $("#add_Manager_Form").serialize(),
+                            type: 'post',
+                            dataType: 'json',
+                            success: function (data) {
+                                if(data){
+                                    toastr.success("添加成功");
+                                    $('#manTable').DataTable().ajax.reload();
+                                }else{
+                                    toastr.error("添加失败");
+                                }
+                            },
+                            error:function () {
+                            }
+                        })
+                        layer.close(index);
+                    }
+
+                }
+            });
+        });
+
+    })
+
+    /**
+     * 用户名验证
+     */
+    function managerNameCheck() {
+        var manName = $("#manager_name_input").val();
+        if (manName == "") {
+            toastr.error("用户名不能为空");
+            return false;
+        }
+        return true;
+
+    }
+
+    /**
+     * 手机号验证
+     */
+    function phoneCheck() {
+        var phone = $("#manager_phone_input").val();
+        if (phone == "") {
+            toastr.error("手机号不能为空");
+            return false;
+        } else if (!(/^1[34578]\d{9}$/.test(phone))) {
+            toastr.error("手机号码有误，请重填");
+            return false;
+        } else {
+            return true;
+        }
+    }
+</script>
+</body>
+</html>

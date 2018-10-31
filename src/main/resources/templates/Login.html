@@ -1,0 +1,502 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base th:href="@{/}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>社区矫正综合监管平台</title>
+    <link rel="shortcut icon" href="../static/images/title_logo.jpg" th:href="@{images/title_logo.jpg}" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="../static/Login/gooine.css" th:href="@{Login/gooine.css}">
+    <script type="text/javascript" src="../static/js/jquery-3.3.1.js" th:src="@{js/jquery-3.3.1.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../static/css/toastr.css" th:href="@{css/toastr.css}"/>
+    <script type="text/javascript" src="../static/js/toastr.min.js" th:src="@{js/toastr.min.js}"></script>
+    <style type="text/css">
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        .bodyer {
+            position: absolute;
+            left: 10%;
+            right: 0px;
+            top: 0px;
+            bottom: 0px;
+        }
+
+        .uts-label {
+            font-size: 14px;
+        }
+
+        .uts-title {
+            font-size: 20px;
+            line-height: 28px;
+            border-bottom: solid 1px #CCC;
+        }
+
+        .uts-line {
+            height: 6px;
+            border-top: solid 1px #FFF;
+        }
+
+        .uts-username {
+            font-size: 14px;
+            padding: 3px 5px;
+            line-height: 18px;
+            width: 160px;
+        }
+
+        .uts-password {
+            font-size: 14px;
+            padding: 3px 5px;
+            line-height: 18px;
+            width: 160px;
+        }
+
+        .uts-verify {
+            font-size: 14px;
+            padding: 3px 5px;
+            line-height: 18px;
+            width: 73px;
+            margin-right: 8px;
+        }
+
+        .uts-btn-login {
+            padding-top: 15px;
+            padding-bottom: 20px;
+            border-bottom: solid 1px #CCC;
+        }
+
+        .uts-btn-login .uts-btn {
+            background: #F60;
+            display: block;
+            border-radius: 3px;
+            border: none;
+            color: #FFF;
+            padding: 0px;
+            height: 35px;
+            width: 240px;
+            font-size: 16px;
+        }
+
+        .uts-forget {
+            padding-top: 8px;
+            border-top: solid 1px #FFF;
+            font-size: 14px;
+            text-align: right;
+        }
+
+        /*验证码样式*/
+        .uts-login-check {
+            font-size: 14px;
+            letter-spacing: 0.15em;
+            padding: 4px;
+            background-color: #5cb85c;
+            color: snow;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .uts-login-check:hover, .uts-btn-login .uts-btn:hover {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+
+<body>
+<div class="bodyer">
+    <div class="intro" style="width:55%;">
+        <div class="center">
+            <div class="core"></div>
+            <div class="outer_one">
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+                <div class="outer_one__piece"></div>
+            </div>
+            <div class="outer_two">
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+                <div class="outer_two__piece"></div>
+            </div>
+            <div class="outer_three">
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+                <div class="outer_three__piece"></div>
+            </div>
+            <div class="outer_four">
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+                <div class="outer_four__piece"></div>
+            </div>
+            <div class="outer_five">
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+                <div class="outer_five__piece"></div>
+            </div>
+            <div class="outer_text">
+                <div class="outer_text__piece"><span>河</span></div>
+                <div class="outer_text__piece"><span>南</span></div>
+                <div class="outer_text__piece"><span>省</span></div>
+                <div class="outer_text__piece"><span>司</span></div>
+                <div class="outer_text__piece"><span>法</span></div>
+                <div class="outer_text__piece"><span>厅</span></div>
+                <div class="outer_text__piece"><span>社</span></div>
+                <div class="outer_text__piece"><span>区</span></div>
+                <div class="outer_text__piece"><span>矫</span></div>
+                <div class="outer_text__piece"><span>正</span></div>
+                <div class="outer_text__piece"><span>管</span></div>
+                <div class="outer_text__piece"><span>理</span></div>
+                <div class="outer_text__piece"><span>局</span></div>
+                <div class="outer_text__piece"><span>，</span></div>
+                <div class="outer_text__piece"><span>社</span></div>
+                <div class="outer_text__piece"><span>区</span></div>
+                <div class="outer_text__piece"><span>矫</span></div>
+                <div class="outer_text__piece"><span>正</span></div>
+                <div class="outer_text__piece"><span>综</span></div>
+                <div class="outer_text__piece"><span>合</span></div>
+                <div class="outer_text__piece"><span>监</span></div>
+                <div class="outer_text__piece"><span>管</span></div>
+                <div class="outer_text__piece"><span>平</span></div>
+                <div class="outer_text__piece"><span>台</span></div>
+                <div class="outer_text__piece"><span>，</span></div>
+                <div class="outer_text__piece"><span>©</span></div>
+                <div class="outer_text__piece"><span>2008</span></div>
+                <div class="outer_text__piece"><span></span></div>
+                <div class="outer_text__piece"><span>三</span></div>
+                <div class="outer_text__piece"><span>A</span></div>
+                <div class="outer_text__piece"><span>软</span></div>
+                <div class="outer_text__piece"><span>件</span></div>
+                <div class="outer_text__piece"><span>信</span></div>
+                <div class="outer_text__piece"><span>息</span></div>
+                <div class="outer_text__piece"><span>科</span></div>
+                <div class="outer_text__piece"><span>技</span></div>
+                <div class="outer_text__piece"><span>有</span></div>
+                <div class="outer_text__piece"><span>限</span></div>
+                <div class="outer_text__piece"><span>公</span></div>
+                <div class="outer_text__piece"><span>司</span></div>
+            </div>
+            <div class="outer_line">
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+                <div class="outer_line__piece"></div>
+            </div>
+        </div>
+    </div>
+    <div class="login" style="left: 55%;">
+        <div class="login_price"></div>
+        <div class="login_price"></div>
+        <div class="login_price"></div>
+        <div class="login_price"></div>
+        <div class="login_price"></div>
+        <div class="login_price"></div>
+        <div class="login_price"></div>
+        <div class="login_price"></div>
+        <div class="login_price"></div>
+        <div class="login_price"></div>
+        <div class="wrapper">
+            <form id="mangerLoginForm" action="manager/Login" method="post">
+                <table width="100%" cellspacing="0" cellpadding="8" border="0">
+                    <tbody>
+                    <tr>
+                        <td colspan="2" class="uts-title">河南省社区矫正信息管理系统</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="uts-line"></td>
+                    </tr>
+                    <tr>
+                        <td class="uts-label" width="65" align="right">用户名：</td>
+                        <td><input id="managerName" name="managerName" class="uts-username" placeholder="请输入用户名"
+                                   type="text" value="测试1">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="uts-label" align="right">密码：</td>
+                        <td><input id="pwd" name="pwd" value="123456" class="uts-password" placeholder="请输入密码" type="password">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="uts-label" align="right">验证码：</td>
+                        <td><input id="NumCheck" class="uts-verify" placeholder="输入验证码" maxlength="6" type="text">
+                            <span id="NumCheckSpan" class="uts-login-check" onclick="createCode()"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="uts-btn-login" align="center">
+                            <input value="登&nbsp;&nbsp;&nbsp;&nbsp;录" onclick="managerLogin()" class="uts-btn"
+                                   type="button">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="uts-forget" align="center">忘记密码</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        //使提示信息居中显示
+        toastr.options.positionClass = 'toast-center-center';
+        createCode();
+    });
+    var code;
+
+    //创建并切换随机验证码
+    function createCode() {
+        code = "";
+        var codeLength = 6; //验证码的长度
+        var codeChars = new Array('1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c',
+            'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'm', 'n',
+            'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A',
+            'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
+            'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'); //所有候选组成验证码的字符，当然也可以用中文的
+        for (var i = 0; i < codeLength; i++) {
+            var charNum = Math.floor(Math.random() * 57);
+            code += codeChars[charNum];
+        }
+        $("#NumCheckSpan").html(code);
+        //清除空格 并全部转换为小写
+        code = code.toLowerCase();
+        $("#NumCheck").val(code);
+    }
+
+    //验证验证码输入是否正确
+    function checkNum() {
+        var checkNum = $("#NumCheck").val();
+        if (checkNum == "") {
+            toastr.error("验证码不能为空！");
+            return false;
+        }
+        if (checkNum.toLowerCase() != code) {
+            toastr.error("验证码输入错误！");
+            $("#NumCheck").val("");
+            createCode();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //验证登录
+    function managerLogin() {
+        if ($("#managerName").val() == "") {
+            toastr.error("用户名不能为空！");
+        } else if ($("#pwd").val() == "") {
+            toastr.error("密码不能为空！");
+        } else if (checkNum()) {
+            $("#mangerLoginForm").submit();
+        }
+    }
+</script>
+</body>
+</html>

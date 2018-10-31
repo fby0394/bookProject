@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<!-- namespace:命名空间,将映射文件和接口映射起来 -->
+<mapper namespace="com.cor.aaa.dao.CorrectPersonnelDao">
+    <!-- 用于上级部门的信息 -->
+    <resultMap id="querySupOrgMap" type="com.cor.aaa.entity.Organization">
+        <id column="orgId" property="orgId"/>
+        <result column="orgName" property="orgName"/>
+        <result column="superiorOrg" property="superiorOrg"/>
+        <result column="orgType" property="orgType"/>
+        <association property="supOrg" javaType="com.cor.aaa.entity.Organization" select="selectSupOrg"
+                     column="superiorOrg"/>
+        <association property="orgPri" javaType="com.cor.aaa.entity.Manager" select="queryManManger"
+                     column="orgPrincipal"/>
+    </resultMap>
+
+    <select id="selectSupOrg" resultMap="querySupOrgMap">
+        select orgId,orgName,superiorOrg,orgType,orgPrincipal from organization where orgId=#{superiorOrg}
+    </select>
+    <!-- 用于查询部门负责人信息 -->
+    <resultMap id="queryManMap" type="com.cor.aaa.entity.Manager">
+        <id column="managerId" property="managerId"/>
+        <result property="managerName" column="managerName"/>
+        <result property="pwd" column="pwd"/>
+        <result property="orgId" column="orgId"/>
+        <result property="roleId" column="roleId"/>
+        <result property="phone" column="phone"/>
+        <result property="status" column="status"/>
+        <result property="roleName" column="roleName"/>
+        <result property="hireDate" column="hireDate"/>
+        <result property="termDate" column="termDate"/>
+    </resultMap>
+    <select id="queryManManger" resultMap="queryManMap">
+        select m.managerId,m.managerName,m.pwd,m.orgId,m.roleId,m.phone,m.status,m.hireDate,m.termDate,r.roleName from
+        manager m left join
+        role r on m.roleId=r.roleId where m.managerId=#{orgPrincipal}
+    </select>
+
+    <resultMap id="queryCorPerMap" type="com.cor.aaa.entity.CorrectPersonnel">
+        <id column="corPerId" property="corPerId"/>
+        <result column="corPerName" property="corPerName"/>
+        <result column="corPerNames" property="corPerNames"/>
+        <result column="corOrgId" property="corOrgId"/>
+        <result column="corPerCarid" property="corPerCarid"/>
+        <result column="corPerPhone" property="corPerPhone"/>
+        <result column="corPerPic" property="corPerPic"/>
+        <result column="manId" property="manId"/>
+        <result column="proliticsStatus" property="proliticsStatus"/>
+        <result column="standardOfCulture" property="standardOfCulture"/>
+        <result column="profession" property="profession"/>
+        <result column="nationality" property="nationality"/>
+        <result column="marriage" property="marriage"/>
+        <result column="censusRegister" property="censusRegister"/>
+        <result column="nativePlace" property="nativePlace"/>
+        <result column="marrigerAddress" property="marrigerAddress"/>
+        <result column="address" property="address"/>
+        <result column="supRankId" property="supRankId"/>
+        <result column="supRankName" property="supRankName"/>
+        <result column="corPerStateId" property="corPerStateId"/>
+        <result column="corPerState" property="corPerState"/>
+        <result column="accusation" property="accusation"/>
+        <result column="perCatId" property="perCatId"/>
+        <result column="performCategory" property="performCategory"/>
+        <result column="judgmentNum" property="judgmentNum"/>
+        <result column="judgmentTime" property="judgmentTime"/>
+        <result column="judgmentOrgId" property="judgmentOrgId"/>
+        <result column="judgmentDeadline" property="judgmentDeadline"/>
+        <result column="additionPenal" property="additionPenal"/>
+        <result column="penalDeadline" property="penalDeadline"/>
+        <result column="correctDeadline" property="correctDeadline"/>
+        <result column="correctBeginTime" property="correctBeginTime"/>
+        <result column="correctEndTime" property="correctEndTime"/>
+        <association select="selectSupOrg" property="corOrg" column="corOrgId"
+                     javaType="com.cor.aaa.entity.Organization"/>
+        <association property="manManger" column="manId" select="queryManManger" javaType="com.cor.aaa.entity.Manager"/>
+        <association property="judgmentOrg" column="judgmentOrgId" select="selectSupOrg"
+                     javaType="com.cor.aaa.entity.Organization"/>
+    </resultMap>
+
+    <select id="queryAllCorPer" resultMap="queryCorPerMap">
+        SELECT * FROM correctpersonnel c LEFT JOIN correctpersonnelstate cs ON c.corPerStateId=cs.corPerStateId LEFT
+        JOIN superviserank s ON c.supRankId=s.supRankId LEFT JOIN performcategory p ON c.supRankId=p.perCatId
+    </select>
+</mapper>
