@@ -1,7 +1,10 @@
 package com.cor.aaa.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 矫正人员信息
@@ -121,6 +124,7 @@ public class CorrectPersonnel implements Serializable {
     /**
      * 判决日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date judgmentTime;
     /**
      * 判决机关编号
@@ -150,11 +154,17 @@ public class CorrectPersonnel implements Serializable {
     /**
      * 入矫日期
      */
-    private String correctBeginTime;
+    private Date correctBeginTime;
     /**
      * 解矫日期
      */
-    private String correctEndTime;
+    private Date correctEndTime;
+
+    /**
+     * 矫正人员的社会关系
+     */
+    private List<CorPerRelation> corPerRelList;
+
 
     public CorrectPersonnel() {
     }
@@ -415,19 +425,19 @@ public class CorrectPersonnel implements Serializable {
         this.correctDeadline = correctDeadline;
     }
 
-    public String getCorrectBeginTime() {
+    public Date getCorrectBeginTime() {
         return correctBeginTime;
     }
 
-    public void setCorrectBeginTime(String correctBeginTime) {
+    public void setCorrectBeginTime(Date correctBeginTime) {
         this.correctBeginTime = correctBeginTime;
     }
 
-    public String getCorrectEndTime() {
+    public Date getCorrectEndTime() {
         return correctEndTime;
     }
 
-    public void setCorrectEndTime(String correctEndTime) {
+    public void setCorrectEndTime(Date correctEndTime) {
         this.correctEndTime = correctEndTime;
     }
 
@@ -447,5 +457,55 @@ public class CorrectPersonnel implements Serializable {
         this.manManger = manManger;
     }
 
+    public List<CorPerRelation> getCorPerRelList() {
+        return corPerRelList;
+    }
 
+    public void setCorPerRelList(List<CorPerRelation> corPerRelList) {
+        this.corPerRelList = corPerRelList;
+    }
+
+
+    @Override
+    public String toString() {
+        return "CorrectPersonnel{" +
+                "corPerId=" + corPerId +
+                ", corPerName='" + corPerName + '\'' +
+                ", corPerNames='" + corPerNames + '\'' +
+                ", corOrgId=" + corOrgId +
+                ", corOrg=" + corOrg +
+                ", corPerCarid='" + corPerCarid + '\'' +
+                ", corPerPhone='" + corPerPhone + '\'' +
+                ", corPerPic='" + corPerPic + '\'' +
+                ", manId=" + manId +
+                ", manManger=" + manManger +
+                ", proliticsStatus='" + proliticsStatus + '\'' +
+                ", standardOfCulture='" + standardOfCulture + '\'' +
+                ", profession='" + profession + '\'' +
+                ", nationality='" + nationality + '\'' +
+                ", marriage='" + marriage + '\'' +
+                ", censusRegister='" + censusRegister + '\'' +
+                ", nativePlace='" + nativePlace + '\'' +
+                ", marrigerAddress='" + marrigerAddress + '\'' +
+                ", address='" + address + '\'' +
+                ", supRankId=" + supRankId +
+                ", supRankName='" + supRankName + '\'' +
+                ", corPerStateId=" + corPerStateId +
+                ", corPerState='" + corPerState + '\'' +
+                ", accusation='" + accusation + '\'' +
+                ", perCatId=" + perCatId +
+                ", performCategory='" + performCategory + '\'' +
+                ", judgmentNum='" + judgmentNum + '\'' +
+                ", judgmentTime=" + judgmentTime +
+                ", judgmentOrgId=" + judgmentOrgId +
+                ", judgmentOrg=" + judgmentOrg +
+                ", judgmentDeadline='" + judgmentDeadline + '\'' +
+                ", additionPenal='" + additionPenal + '\'' +
+                ", penalDeadline='" + penalDeadline + '\'' +
+                ", correctDeadline='" + correctDeadline + '\'' +
+                ", correctBeginTime='" + correctBeginTime + '\'' +
+                ", correctEndTime='" + correctEndTime + '\'' +
+                ", corPerRelList=" + corPerRelList +
+                '}';
+    }
 }

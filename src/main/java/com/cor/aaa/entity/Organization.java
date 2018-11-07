@@ -39,6 +39,7 @@ public class Organization implements Serializable {
     /**
      * 下级机构
      */
+
     private List<Organization> subOrgs;
 
     public Organization getSupOrg() {

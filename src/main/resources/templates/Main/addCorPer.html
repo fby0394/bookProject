@@ -11,14 +11,22 @@
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
     <link href="../../static/assets/css/bootstrap.min.css" th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet"/>
 
+
     <script src="../../static/js/jquery-3.3.1.js" th:src="@{/js/jquery-3.3.1.js}" type="text/javascript"></script>
     <script src="../../static/assets/js/bootstrap.min.js" th:src="@{/assets/js/bootstrap.min.js}"></script>
-
+    <script src="../../static/assets/laydate/laydate.js" type="text/javascript"
+            th:src="@{/assets/laydate/laydate.js}"></script>
     <!-- 提示工具 -->
     <link rel="stylesheet" type="text/css" href="../../static/css/toastr.css" th:href="@{/css/toastr.css}"/>
     <script type="text/javascript" src="../../static/js/toastr.min.js" th:src="@{/js/toastr.min.js}"></script>
+
+    <!-- 下拉框组件 -->
+    <link rel="stylesheet" href="../../static/chosen/chosen.css" th:href="@{/chosen/chosen.css}">
+    <script type="text/javascript" src="../../static/chosen/chosen.jquery.js"
+            th:src="@{/chosen/chosen.jquery.js}"></script>
     <script src="../../static/js/myJS.js" th:src="@{/js/myJS.js}"></script>
     <script type="text/javascript" th:inline="javascript">
+
         $(function () {
             //使提示信息居中显示
             toastr.options.positionClass = 'toast-center-center';
@@ -26,58 +34,435 @@
         var basePath = [[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]];
 
     </script>
+    <style type="text/css">
+        .corPerTable tbody tr td {
+            padding-left: 5px;
+            padding-top: 5px;
+        }
+
+        .corPerTable tbody tr td span {
+            padding-left: 10px;
+            padding-right: 2px;
+        }
+
+        .fileDiv {
+            margin-left: 20px;
+            width: 140px;
+            height: 140px;
+            position: relative;
+        }
+
+        .fileDiv .close_file_img {
+            position: absolute;
+            display: none;
+            padding: 2px 6px;
+            right: -20px;
+            top: 5px;
+        }
+
+        .fileDiv .close_file_img:hover {
+            cursor: pointer;
+        }
+
+        .fileDefaultDiv {
+            border: 1px solid #ccc;
+            text-align: center;
+            font-size: 45px;
+            height: 140px;
+            color: #ccc;
+            line-height: 140px;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        }
+    </style>
 </head>
 <body>
-<div id="content" style="padding: 20px;">
-    <form action="" role="form">
-        <table border="1">
+<div id="content" style="padding: 20px;min-width: 1000px;">
+    <form id="addCorPerForm" role="form" method="post">
+        <h3>基本信息</h3>
+        <table class="corPerTable">
             <tr>
-                <td style="width: auto;">矫正单位:</td>
-                <td style="width: 200px;">
-                    <input type="text" class="form-control input-sm" placeholder="请输入名字">
+                <td style="width: auto;"><span class="f4">矫正单位</span>:</td>
+                <td style="width: 180px;">
+                    <input type="hidden" name="corOrgId" th:value="${session.manager.orgId}"/>
+                    <input type="hidden" name="manId" th:value="${session.manager.managerId}"/>
+                    <input type="text" class="form-control input-sm" disabled
+                           th:value="${session.manager.org.orgName}"/>
                 </td>
-                <td style="width: auto;">填写人:</td>
-                <td style="width: 200px;">
-                    <input type="text" class="form-control input-sm" placeholder="请输入名字">
+                <td><span class="f2">姓名</span>:</td>
+                <td style="width: 180px;">
+                    <input type="text" name="corPerName" class="form-control input-sm"/>
                 </td>
-                <td style="width: auto;">身份证号:</td>
-                <td style="width: 200px;">
-                    <input type="text" class="form-control input-sm" placeholder="请输入名字">
+                <td><span class="f3">曾用名</span>:</td>
+                <td style="width: 180px;">
+                    <input type="text" name="corPerNames" class="form-control input-sm"/>
                 </td>
-                <td rowspan="3">
+                <td rowspan="4" width="160px" style="text-align: right">
+                    <div class="fileDiv">
+                        <div class="close_file_img" onclick="clearAway(this)">X</div>
+                        <div>
+                            <input type="file" onchange="changImg(event,this)" name="corPerPicFlie"
+                                   style="display: none;"/>
+                            <div class="fileDefaultDiv" onclick="selectPic(this)">+</div>
+                            <img alt="" teaPicName="" src="" onclick="selectPic(this)" width="140px" height="140px"
+                                 style="display: none;"/>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="f3">手机号</span>:</td>
+                <td>
+                    <input type="text" maxlength="11" class="form-control input-sm" name="corPerPhone"/>
+                </td>
+                <td><span class="f4">身份证号</span>:</td>
+                <td>
+                    <input type="text" name="corPerCarid" maxlength="18" class="form-control input-sm"/>
+                </td>
+                <td><span class="f2">民族</span>:</td>
+                <td>
+                    <select id="nationality" class="form-control input-sm chosen" name="nationality">
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="f4">政治面貌</span>:</td>
+                <td>
+                    <input type="text" name="proliticsStatus" class="form-control input-sm"/>
+                </td>
+                <td><span class="f4">文化程度</span>:</td>
+                <td>
+                    <input type="text" name="standardOfCulture" class="form-control input-sm"/>
+                </td>
+                <td><span class="f4">婚姻状况</span>:</td>
+                <td>
+                    <input type="text" name="marriage" class="form-control input-sm"/>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="f2">职业</span>:</td>
+                <td>
+                    <input type="text" name="profession" class="form-control input-sm"/>
+                </td>
+                <td><span class="f2">户籍</span>:</td>
+                <td>
+                    <input type="text" name="censusRegister" class="form-control input-sm"/>
+                </td>
+                <td><span class="f2">籍贯</span>:</td>
+                <td>
+                    <input type="text" name="nativePlace" class="form-control input-sm"/>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="f4">判决机构</span>:</td>
+                <td>
+                    <select id="judgmentOrg" class="form-control input-sm chosen" name="judgmentOrgId">
+                    </select>
+                </td>
+                <td><span class="f4">执行类别</span>:</td>
+                <td>
+                    <select id="performCategory" class="form-control input-sm chosen" name="perCatId">
+                        <option value="1">缓刑</option>
+                        <option value="1">管制</option>
+                        <option value="1">假释</option>
+                        <option value="1">暂予监外执行</option>
+                    </select>
+                </td>
+                <td><span class="f4">户籍地址</span>:</td>
+                <td colspan="2">
+                    <input type="text" name="marrigerAddress" class="form-control input-sm"/>
+                </td>
 
+            </tr>
+            <tr>
+                <td><span class="f2">罪名</span>:</td>
+                <td>
+                    <input type="text" name="accusation" class="form-control input-sm"/>
+                </td>
+                <td><span class="f4">判决书号</span>:</td>
+                <td>
+                    <input type="text" name="judgmentNum" class="form-control input-sm"/>
+                </td>
+                <td><span class="f4">居住地址</span>:</td>
+                <td colspan="2">
+                    <input type="text" name="address" class="form-control input-sm"/>
                 </td>
             </tr>
             <tr>
-                <td style="width: auto;">姓名:</td>
-                <td style="width: 200px;">
-                    <input type="text" class="form-control input-sm" placeholder="请输入名字">
+                <td><span class="f3">附加刑</span>:</td>
+                <td>
+                    <input type="text" name="additionPenal" class="form-control input-sm"/>
                 </td>
-                <td style="width: auto;">曾用名:</td>
-                <td style="width: 200px;">
-                    <input type="text" class="form-control input-sm" placeholder="请输入名字">
+                <td><span class="f4">判决日期</span>:</td>
+                <td>
+                    <input type="text" class="form-control input-sm laydate-icon" name="judgmentTime"
+                           id="judgmentTime"/>
                 </td>
-                <td style="width: auto;">身份证号:</td>
-                <td style="width: 200px;">
-                    <input type="text" class="form-control input-sm" placeholder="请输入名字">
+                <td><span class="f2">刑期</span>:</td>
+                <td colspan="2">
+                    <input type="hidden" id="penalDeadline" name="penalDeadline" value=""/>
+                    <div style="display: inline-block;width: 145px;">
+                        <input class="form-control input-sm laydate-icon" id="penalDeadlineStar"/>
+                    </div>
+                    <div style="display: inline-block;width: auto;padding: 0 2px">
+                        起
+                    </div>
+                    <div style="display: inline-block;width: 145px;">
+                        <input class="form-control input-sm laydate-icon" id="penalDeadlineEnd"/>
+                    </div>
+                    <div style="display: inline-block;width: auto">
+                        止
+                    </div>
                 </td>
             </tr>
             <tr>
-                <td style="width: auto;">矫正单位:</td>
-                <td style="width: 200px;">
-                    <input type="text" class="form-control input-sm" placeholder="请输入名字">
+                <td><span class="f4">原判刑期</span>:</td>
+                <td>
+                    <input type="text" name="judgmentDeadline" class="form-control input-sm"/>
                 </td>
-                <td style="width: auto;">填写人:</td>
-                <td style="width: 200px;">
-                    <input type="text" class="form-control input-sm" placeholder="请输入名字">
+                <td><span class="f4">入矫日期</span>:</td>
+                <td>
+                    <input type="text" class="form-control input-sm laydate-icon" name="correctBeginTime"
+                           id="correctBeginTime"/>
                 </td>
-                <td style="width: auto;">身份证号:</td>
-                <td style="width: 200px;">
-                    <input type="text" class="form-control input-sm" placeholder="请输入名字">
+                <td><span class="f4">矫正期限</span>:</td>
+                <td colspan="2">
+                    <input type="hidden" id="correctDeadline" name="correctDeadline" value=""/>
+                    <div style="display: inline-block;width: 145px;">
+                        <input class="form-control input-sm laydate-icon" id="correctDeadlineStar"/>
+                    </div>
+                    <div style="display: inline-block;width: auto;padding: 0 2px">
+                        起
+                    </div>
+                    <div style="display: inline-block;width: 145px;">
+                        <input class="form-control input-sm laydate-icon" id="correctDeadlineEnd"/>
+                    </div>
+                    <div style="display: inline-block;width: auto">
+                        止
+                    </div>
                 </td>
             </tr>
         </table>
+        <h3>社会关系</h3>
+        <table id="corPerTableRel" class="corPerTable">
+            <tbody>
+            <tr>
+                <td><span class="f2">姓名</span>:</td>
+                <td><input type="text" name="corPerRelList[0].corPerRelName" names="corPerRelName"
+                           class="form-control input-sm"/></td>
+                <td style="width: auto;"><span class="f4">工作单位</span>:</td>
+                <td><input type="text" name="corPerRelList[0].workUnit" names="workUnit" class="form-control input-sm"/>
+                </td>
+                <td><span class="f4">联系电话</span>:</td>
+                <td><input type="text" name="corPerRelList[0].corPerRelPhone" names="corPerRelPhone"
+                           class="form-control input-sm"/></td>
+                <td><span>关 系</span>:</td>
+                <td><input type="text" name="corPerRelList[0].relation" names="relation" title="与矫正人员的关系（如‘父亲’，‘母亲’）"
+                           class="form-control input-sm"/></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="9">
+                    <span>
+                        <button type="button" class="btn btn-sm" trNum="0"
+                                onclick="addCorPerTableTR(this)">添加社会关系</button>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td>
+                    <button type="button" class="btn btn-block btn-success" onclick="addCorPerSubmit()">添加人员</button>
+                </td>
+                <td></td>
+                <td>
+                    <input type="reset" class="btn btn-block btn-warning" value="重置表单">
+                </td>
+                <td colspan="3"></td>
+            </tr>
+            </tbody>
+        </table>
+
+
     </form>
 </div>
+<script type="text/javascript">
+    $(function () {
+        //初始化日期选择
+        //判决日期
+        laydate({
+            elem: '#judgmentTime',
+            event: 'focus'
+        });
+        //入矫日期
+        laydate({
+            elem: '#correctBeginTime',
+            event: 'focus'
+        });
+        //刑期起
+        laydate({
+            elem: '#penalDeadlineStar',
+            event: 'focus',
+            format: 'YYYY年MM月DD日'
+        });
+        //刑期止
+        laydate({
+            elem: '#penalDeadlineEnd',
+            event: 'focus',
+            format: 'YYYY年MM月DD日'
+        });
+        //矫正期开始
+        laydate({
+            elem: '#correctDeadlineStar',
+            event: 'focus',
+            format: 'YYYY年MM月DD日'
+        });
+        //矫正器截至
+        laydate({
+            elem: '#correctDeadlineEnd',
+            event: 'focus',
+            format: 'YYYY年MM月DD日'
+        });
+        initNations();
+        getOrgSelect($("#judgmentOrg"), 1);
+        showSelect();
+    })
+    var nations = ["汉族", "蒙古族", "回族", "藏族", "维吾尔族", "苗族", "彝族", "壮族", "布依族", "朝鲜族", "满族", "侗族", "瑶族", "白族", "土家族",
+        "哈尼族", "哈萨克族", "傣族", "黎族", "傈僳族", "佤族", "畲族", "高山族", "拉祜族", "水族", "东乡族", "纳西族", "景颇族", "柯尔克孜族",
+        "土族", "达斡尔族", "仫佬族", "羌族", "布朗族", "撒拉族", "毛南族", "仡佬族", "锡伯族", "阿昌族", "普米族", "塔吉克族", "怒族", "乌孜别克族",
+        "俄罗斯族", "鄂温克族", "德昂族", "保安族", "裕固族", "京族", "塔塔尔族", "独龙族", "鄂伦春族", "赫哲族", "门巴族", "珞巴族", "基诺族"];
+
+    /**
+     * 初始化民族信息
+     */
+    function initNations() {
+        var staff_nation = document.getElementById("nationality");
+        for (var i in nations) {
+            staff_nation.add(new Option(nations[i], nations[i]));
+        }
+    }
+
+    /**
+     *表单提交
+     */
+    function addCorPerSubmit() {
+        $("#penalDeadline").val($("#penalDeadlineStar").val() + " 起 " + $("#penalDeadlineEnd") + " 止 ");
+        $("#correctDeadline").val($("#correctDeadlineStar").val() + " 起 " + $("#correctDeadlineEnd") + " 止 ");
+        var fromData = new FormData($("#addCorPerForm")[0]);
+        $.ajax({
+            url: basePath + '/CorPer/addCorPer',
+            type: 'POST',
+            data: fromData,
+            dataType: 'json',
+            traditional: true,
+            contentType: false,
+            processData: false,
+            aynsc: false,
+            success: function (data) {
+                if (data) {
+                    toastr.success("添加成功");
+                    setTimeout(function () {
+                        parent.$("#showCorPerA").click();
+                    }, 1000);
+                    //parent.$('#iframe').attr("src", "CorPer/showCorPer").ready();
+                } else {
+                    toastr.error("添加失败,请重新填写");
+                }
+            }
+        });
+    }
+
+    /**
+     * 添加一个社会关系填写
+     * @param obj
+     */
+    function addCorPerTableTR(obj) {
+        var HtmlTr = '<tr>' +
+            '<td><span class="f2">姓名</span>:</td>' +
+            '<td><input type="text" name="corPerRelName" names="corPerRelName" class="form-control input-sm"/></td>' +
+            '<td style="width: auto;"><span class="f4">工作单位</span>:</td>' +
+            '<td><input type="text" name="workUnit" names="workUnit" class="form-control input-sm"/></td>' +
+            '<td><span class="f4">联系电话</span>:</td>' +
+            '<td><input type="text" name="corPerRelPhone" names="corPerRelPhone" class="form-control input-sm"/></td>' +
+            '<td><span>关 系</span>:</td>' +
+            '<td><input type="text" name="relation" names="relation" title="与矫正人员的关系（如‘父亲’，‘母亲’）" class="form-control input-sm"/></td>' +
+            '<td><span><button type="button" class="btn btn-sm btn-warning" trNum="0" onclick="deleteCorPerTableTR(this)">移除</button></span></td></tr>';
+        $(obj).parents("tr").before(HtmlTr);
+        CorPerTableTrRename();
+    }
+
+    function deleteCorPerTableTR(obj) {
+        $(obj).parents("tr").remove();
+        CorPerTableTrRename();
+    }
+
+    /**
+     * 社会关系文本框重命名
+     */
+    function CorPerTableTrRename() {
+        var num = 0;
+        $("#corPerTableRel tr").each(function () {
+            $(this).find("input").each(function () {
+                $(this).attr("name", "corPerRelList[" + num + "]." + $(this).attr("names"));
+            });
+            num++;
+        });
+    }
+
+    //选择图片
+    function selectPic(obj) {
+        var parent = $(obj).parent();
+        parent.find("input").click();
+    }
+
+    //图片回显
+    function changImg(e, obj) {
+        var parent = $(obj).parent();
+        var num = $(obj).val().lastIndexOf(".");
+        var check = $(obj).val().substring(num + 1).toLowerCase();
+        if (check == "jpg" || check == "gif" || check == "png" || check == "jpeg") {
+            for (var i = 0; i < e.target.files.length; i++) {
+                var file = e.target.files.item(i);
+                if (!(/^image\/.*$/i.test(file.type))) {
+                    continue;
+                    //不是图片 就跳出这一次循环
+                }
+                //实例化FileReader API
+                var freader = new FileReader();
+                freader.readAsDataURL(file);
+                freader.onload = function (e) {
+                    parent.find("img").attr("src", e.target.result).show();
+                    parent.find("div").hide();
+                    parent.parent().find(".close_file_img").show();
+                };
+            }
+        }
+        else {
+            $(obj).val("");
+            toastr.error("请选择正确的图片格式！");
+        }
+    }
+
+    //清除选择的图片
+    function clearAway(obj) {
+        var parent = $(obj).parent();
+        $(obj).hide();
+        parent.find("img").attr("src", "").hide();
+        parent.find("div").show();
+        parent.find("input").val("");
+    }
+
+    /**
+     * 显示下拉框
+     */
+    function showSelect() {
+        $('.chosen').chosen({
+            max_shown_results: 1000, //下拉框最大显示选项数量
+            disable_search_threshold: 20,
+            search_contains: true,
+            case_sensitive_search: true,
+        });
+    }
+</script>
 </body>
 </html>

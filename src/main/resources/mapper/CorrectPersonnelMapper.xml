@@ -36,6 +36,19 @@
         role r on m.roleId=r.roleId where m.managerId=#{orgPrincipal}
     </select>
 
+    <!-- 用于社会关系信息 -->
+    <resultMap id="queryRelationMap" type="com.cor.aaa.entity.CorPerRelation">
+        <id column="corPerRelaId" property="corPerRelaId"/>
+        <result property="corPerId" column="corPerId"/>
+        <result property="corPerRelName" column="corPerRelName"/>
+        <result property="workUnit" column="workUnit"/>
+        <result property="corPerRelPhone" column="corPerRelPhone"/>
+        <result property="relation" column="relation"/>
+    </resultMap>
+    <select id="queryCorPerRelation" resultMap="queryRelationMap">
+        SELECT * FROM corperrelation WHERE corPerId=#{corPerId}
+    </select>
+
     <resultMap id="queryCorPerMap" type="com.cor.aaa.entity.CorrectPersonnel">
         <id column="corPerId" property="corPerId"/>
         <result column="corPerName" property="corPerName"/>
@@ -75,10 +88,32 @@
         <association property="manManger" column="manId" select="queryManManger" javaType="com.cor.aaa.entity.Manager"/>
         <association property="judgmentOrg" column="judgmentOrgId" select="selectSupOrg"
                      javaType="com.cor.aaa.entity.Organization"/>
+        <collection property="corPerRelList" column="corPerId" ofType="com.cor.aaa.entity.CorPerRelation"
+                    select="queryCorPerRelation"/>
     </resultMap>
 
     <select id="queryAllCorPer" resultMap="queryCorPerMap">
         SELECT * FROM correctpersonnel c LEFT JOIN correctpersonnelstate cs ON c.corPerStateId=cs.corPerStateId LEFT
         JOIN superviserank s ON c.supRankId=s.supRankId LEFT JOIN performcategory p ON c.supRankId=p.perCatId
+        <if test="null!=_parameter">
+            WHERE corPerId=#{corPerId}
+        </if>
     </select>
+
+    <insert id="addCorPer" parameterType="com.cor.aaa.entity.CorrectPersonnel" useGeneratedKeys="true"
+            keyProperty="corPerId">
+        INSERT INTO
+        correctpersonnel(corPerName,corPerNames,corOrgId,corPerCarid,corPerPhone,corPerPic,manId,proliticsStatus,standardOfCulture,profession,nationality,marriage,censusRegister,nativePlace,marrigerAddress,address,supRankId,corPerStateId,accusation,perCatId,judgmentNum,judgmentTime,judgmentOrgId,judgmentDeadline,additionPenal,penalDeadline,correctBeginTime,correctDeadline)
+        VALUES
+        (#{corPerName},#{corPerNames},#{corOrgId},#{corPerCarid},#{corPerPhone},#{corPerPic},#{manId},#{proliticsStatus},#{standardOfCulture},#{profession},#{nationality},#{marriage},#{censusRegister},#{nativePlace},#{marrigerAddress},#{address},1,1,#{accusation},#{perCatId},#{judgmentNum},#{judgmentTime},#{judgmentOrgId},#{judgmentDeadline},#{additionPenal},#{penalDeadline},#{correctBeginTime},#{correctDeadline});
+    </insert>
+
+    <insert id="addCorPerRel">
+        INSERT INTO
+        corperrelation(corPerRelaId,corPerId,corPerRelName,workUnit,corPerRelPhone,relation)
+        VALUES
+        <foreach collection="corPerRelList" item="corPerRel" separator="," index="index">
+            ('${corPerId}${index}',#{corPerId},#{corPerRel.corPerRelName},#{corPerRel.workUnit},#{corPerRel.corPerRelPhone},#{corPerRel.relation})
+        </foreach>
+    </insert>
 </mapper>

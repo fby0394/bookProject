@@ -33,7 +33,15 @@
     <!-- 提示工具 -->
     <link rel="stylesheet" type="text/css" href="../../static/css/toastr.css" th:href="@{/css/toastr.css}"/>
     <script type="text/javascript" src="../../static/js/toastr.min.js" th:src="@{/js/toastr.min.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(function () {
+            //使提示信息居中显示
+            toastr.options.positionClass = 'toast-center-center';
 
+        })
+        var basePath = [[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]];
+
+    </script>
     <!-- 特定于页面的插件脚本 -->
     <script src="../../static/assets/js/jquery.dataTables.min.js"
             th:src="@{/assets/js/jquery.dataTables.min.js}"></script>
@@ -44,13 +52,8 @@
             type="text/javascript"></script>
     <script src="../../static/assets/dist/echarts.js" th:src="@{/assets/dist/echarts.js}"></script>
     <script src="../../static/js/myJS.js" th:src="@{/js/myJS.js}"></script>
-    <script type="text/javascript" th:inline="javascript">
-        $(function () {
-            //使提示信息居中显示
-            toastr.options.positionClass = 'toast-center-center';
-        })
-        var basePath = [[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]];
-
+    <script th:inline="javascript">
+        ManorgId=[[${session.manager.orgId}]];
     </script>
     <style type="text/css">
         .corPerInfo span {
@@ -69,7 +72,6 @@
         <a href="CorPer/showAddCorPer" th:href="@{/CorPer/showAddCorPer}" title="添加矫正人员"
            class="btn btn-warning Order_form"><i
                 class="icon-plus"></i>添加矫正人员</a>
-        <a href="javascript:void(0)" class="btn btn-danger"><i class="icon-trash"></i>批量删除</a>
        </span>
             <span class="r_f">可管理：<b id="CorPerManagerB">0</b> 名人员</span>
         </div>
@@ -88,7 +90,7 @@
         corPerTable = $('#corPerTable').DataTable({
             ajax: basePath + "/CorPer/queryAllCorPer",
             //排序的列
-            aaSorting: [1, "desc"],
+            aaSorting: [0, "desc"],
             //定义组件显示的位置
             sDom: "<'row'<'col-sm-3'l><'col-sm-9' <'#orgSelect' 'dataTables_filter'>>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
             pagingType: "full_numbers",
@@ -104,15 +106,28 @@
                     "bVisible": false
                 },
                 {
-                    "sTitle": "矫正单位",
-                    "mDataProp": "corOrg.orgName",
+                    "sTitle": "照片",
+                    "mDataProp": null,
+                    "targets": 0,
+                    "sClass": "center",
+                    "bSortable": false,
+                    render: function (data, type, row, meta) {
+                        var a = "<img src='/CCMS/images/CorPerPic/" + row.corPerPic + "'width='40px' height='40px' />";
+
+
+                        return a;
+                    }
+                },
+                {
+                    "sTitle": "名字",
+                    "mDataProp": "corPerName",
                     "targets": 0,
                     "sClass": "center",
                     "bSortable": false
                 },
                 {
-                    "sTitle": "名字",
-                    "mDataProp": "corPerName",
+                    "sTitle": "矫正单位",
+                    "mDataProp": "corOrg.orgName",
                     "targets": 0,
                     "sClass": "center",
                     "bSortable": false
@@ -196,7 +211,7 @@
                     "bSortable": false,
                     render: function (data, type, row, meta) {
 
-                        return "<span class='details-control'>详细</span>";
+                        return "<button class='btn btn-sm btn-info details-control'>详细</button><a href='/CCMS/CorPer/showCorPerInfo?corPerId="+row.corPerId+"' title='矫正人员详细信息' class='btn btn-sm btn-info Order_form'>详细信息</a>";
                     }
                 }
             ],
@@ -216,7 +231,7 @@
                 foundOrgSelect($("#orgSelectLi"));
                 $("#orgSelectLi select").attr("onchange", "getOrgSelectText(this)");
                 $("#CorPerManagerB").html(json.iTotalRecords);
-
+                updateMenu();
             }
 
         });
@@ -271,138 +286,29 @@
         corPerTable.search(orgName).draw();
     }
 </script>
-
-<!--添加用户图层-->
-<div class="add_menber" id="add_menber_style" style="display:none;padding: 30px;">
-
-    <form id="add_Manager_Form" role="form">
-        <div class="form-group">
-            <label for="manager_name_input">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
-            <div style="width: 80%;display: inline-block;">
-                <input id="manager_name_input" type="text" name="managerName" class="form-control" placeholder="请输入姓名"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="manager_phone_input">联系电话：</label>
-            <div style="width: 80%;display: inline-block;">
-                <input id="manager_phone_input" type="text" onkeyup='this.value=this.value.replace(/\D/gi,"")'
-                       maxlength="11" name="phone" class="form-control" placeholder="请输入手机号"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label>所属部门：</label>
-            <div style="width: 80%;display: inline-block;">
-                <span style="padding: 5px 9px;" id="orgSelectSpan">
-                </span>
-                <input type="hidden" name="orgId"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label>所属角色：</label>
-            <div style="width: 80%;display: inline-block;">
-                <span style="padding: 5px 9px;">
-                <label>
-                    <input type="radio" class="ace" name="roleId" value="1"><span class="lbl">管理员</span>
-                </label>&nbsp;&nbsp;&nbsp;
-                <label>
-                    <input type="radio" class="ace" name="roleId" value="2" checked><span class="lbl">工作人员</span>
-                </label>
-                </span>
-            </div>
-        </div>
-    </form>
-</div>
-
 <script type="text/javascript">
-    $(function () {
-        /*用户-添加*/
-        $('#add_Manager').on('click', function () {
-            foundOrgSelect($("#orgSelectSpan"));
-            $("#add_Manager_Form")[0].reset();
-            $("#add_Manager_Form :input[name='orgId']").val($($("#orgSelectSpan select")[0]).val());
-            layer.open({
-                type: 1,
-                title: '添加用户',
-                maxmin: true,
-                shadeClose: true, //点击遮罩关闭层
-                area: ['800px', ''],
-                content: $('#add_menber_style'),
-                btn: ['提交', '取消'],
-                yes: function (index, layero) {
-                    if (managerNameCheck() && phoneCheck()) {
-                        $.ajax({
-                            url: basePath + '/manager/addMan',
-                            data: $("#add_Manager_Form").serialize(),
-                            type: 'post',
-                            dataType: 'json',
-                            success: function (data) {
-                                if (data) {
-                                    toastr.success("添加成功");
-                                    $('#manTable').DataTable().ajax.reload();
-                                } else {
-                                    toastr.error("添加失败");
-                                }
-                            },
-                            error: function () {
-                            }
-                        })
-                        layer.close(index);
-                    }
 
-                }
-            });
-        });
 
-    })
-
-    /**
-     * 用户名验证
-     */
-    function managerNameCheck() {
-        var manName = $("#manager_name_input").val();
-        if (manName == "") {
-            toastr.error("用户名不能为空");
-            return false;
-        }
-        return true;
-
-    }
-
-    /**
-     * 手机号验证
-     */
-    function phoneCheck() {
-        var phone = $("#manager_phone_input").val();
-        if (phone == "") {
-            toastr.error("手机号不能为空");
-            return false;
-        } else if (!(/^1[34578]\d{9}$/.test(phone))) {
-            toastr.error("手机号码有误，请重填");
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    //改变导航栏显示的内容
     var index = parent.layer.getFrameIndex(window.name);
     parent.layer.iframeAuto(index);
-    $('.Order_form').on('click', function () {
-        var cname = $(this).attr("title");
-        var chref = $(this).attr("href");
-        var cnames = parent.$('.Current_page').html();
-        var herf = parent.$("#iframe").attr("src");
-        parent.$('#parentIframe').html(cname);
-        parent.$('#iframe').attr("src", chref).ready();
-        ;
-        parent.$('#parentIframe').css("display", "inline-block");
-        parent.$('.Current_page').attr({"name": herf, "href": "javascript:void(0)"}).css({
-            "color": "#4c8fbd",
-            "cursor": "pointer"
+    //给按钮绑定面包屑导航
+    function updateMenu() {
+        $('.Order_form').on('click', function () {
+            var cname = $(this).attr("title");
+            var chref = $(this).attr("href");
+            var cnames = parent.$('.Current_page').html();
+            var herf = parent.$("#iframe").attr("src");
+            parent.$('#parentIframe').html(cname);
+            parent.$('#iframe').attr("src", chref).ready();
+            parent.$('#parentIframe').css("display", "inline-block");
+            parent.$('.Current_page').attr({"name": herf, "href": "javascript:void(0)"}).css({
+                "color": "#4c8fbd",
+                "cursor": "pointer"
+            });
+            parent.layer.close(index);
         });
-        parent.layer.close(index);
+    }
 
-    });
 </script>
 </body>
 </html>

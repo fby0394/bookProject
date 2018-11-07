@@ -30,7 +30,8 @@
     <![endif]-->
     <script src="../../static/js/jquery-3.3.1.js" th:src="@{/js/jquery-3.3.1.js}"></script>
     <script src="../../static/assets/js/bootstrap.min.js" th:src="@{/assets/js/bootstrap.min.js}"></script>
-
+    <script type="text/javascript">
+    </script>
     <!-- 特定于页面的插件脚本 -->
     <script src="../../static/assets/js/jquery.dataTables.min.js"
             th:src="@{/assets/js/jquery.dataTables.min.js}"></script>
@@ -78,6 +79,9 @@
         </div>
     </div>
 </div>
+<script th:inline="javascript">
+    ManorgId=[[${session.manager.orgId}]];
+</script>
 <script type="text/javascript">
     $(function () {
         getOrgData();

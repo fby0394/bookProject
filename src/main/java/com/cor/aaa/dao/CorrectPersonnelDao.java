@@ -1,5 +1,6 @@
 package com.cor.aaa.dao;
 
+import com.cor.aaa.entity.CorPerRelation;
 import com.cor.aaa.entity.CorrectPersonnel;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -22,6 +23,15 @@ public interface CorrectPersonnelDao {
      */
     public List<CorrectPersonnel> queryAllCorPer();
 
+
+    /**
+     * 查看指定矫正人员的详细信息
+     *
+     * @param corPerId 矫正人员Id
+     * @return
+     */
+    public CorrectPersonnel queryAllCorPer(Integer corPerId);
+
     /**
      * 添加矫正人员
      *
@@ -29,6 +39,14 @@ public interface CorrectPersonnelDao {
      * @return
      */
     public int addCorPer(CorrectPersonnel corPer);
+
+    /**
+     * 添加矫正人员的社会关系信息（多个）
+     *
+     * @param corPerRelList
+     * @return
+     */
+    public int addCorPerRel(CorrectPersonnel corPer);
 
     /**
      * 修改矫正人员信息

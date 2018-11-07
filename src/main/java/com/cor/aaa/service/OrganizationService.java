@@ -5,13 +5,16 @@ import com.cor.aaa.entity.DataTableJson;
 import com.cor.aaa.entity.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 机构信息Service
  */
 @Service
+@Transactional
 public class OrganizationService {
 
     @Autowired
@@ -28,13 +31,28 @@ public class OrganizationService {
     }
 
     /**
-     * 根据部门编号获取指定部门的信息
+     * 根据部门编号获取指定部门的信息和其管理的所有的部门信息
      *
      * @param orgId 部门编号
      * @return
      */
-    public Organization queryAllOrg(Integer orgId) {
-        return orgDao.queryAllOrg(orgId);
+    public DataTableJson queryAllOrg(Integer orgId) {
+        Organization org = orgDao.queryAllOrg(orgId);
+        List<Organization> Orgs = new ArrayList<Organization>();
+        getOrg(Orgs, org);
+        return new DataTableJson(Orgs.size(), Orgs);
+
+
+    }
+
+    public List<Organization> getOrg(List<Organization> list, Organization org) {
+        list.add(org);
+        if (null != org.getSubOrgs() && org.getSubOrgs().size() > 0) {
+            for (int i = 0; i < org.getSubOrgs().size(); i++) {
+                getOrg(list, orgDao.queryAllOrg(org.getSubOrgs().get(i).getOrgId()));
+            }
+        }
+        return list;
     }
 
     /**

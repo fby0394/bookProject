@@ -6,6 +6,7 @@ import com.cor.aaa.entity.Manager;
 import com.cor.aaa.util.PwdEncryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  * @Date:2018-10-12 15:09
  */
 @Service
+@Transactional
 public class ManagerService {
 
     @Autowired

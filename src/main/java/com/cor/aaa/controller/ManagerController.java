@@ -36,11 +36,22 @@ public class ManagerController {
         Manager manager = service.queryAllMan(man);
         if (null != manager) {
             HttpSession session = request.getSession();
+            session.setMaxInactiveInterval(30 * 60);
             session.setAttribute("manager", manager);
             return "Main/index.html";
         }
 
         return "Login.html";
+    }
+
+    /**
+     * 显示首页
+     *
+     * @return
+     */
+    @RequestMapping("/showMain")
+    public String showMain() {
+        return "Main/main.html";
     }
 
     /**
@@ -50,9 +61,10 @@ public class ManagerController {
      */
     @RequestMapping("/queryAllMan")
     @ResponseBody
-    public DataTableJson queryData(){
+    public DataTableJson queryData() {
         return service.queryAllMan();
     }
+
     /**
      * 显示人员管理页面
      *
@@ -66,15 +78,17 @@ public class ManagerController {
 
     /**
      * 添加工作人员
+     *
      * @param man
      * @return
      */
     @RequestMapping("/addMan")
     @ResponseBody
-    public boolean addMan(Manager man){
+    public boolean addMan(Manager man) {
         System.out.println(man.toString());
         return service.addMan(man);
     }
+
     @RequestMapping("/Logins")
     public String Logins(Manager man, HttpServletRequest request) {
 

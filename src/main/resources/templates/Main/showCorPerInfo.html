@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>矫正人员详细信息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link href="../../static/assets/css/bootstrap.min.css" th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet"/>
+
+
+    <script src="../../static/js/jquery-3.3.1.js" th:src="@{/js/jquery-3.3.1.js}" type="text/javascript"></script>
+    <script src="../../static/assets/js/bootstrap.min.js" th:src="@{/assets/js/bootstrap.min.js}"></script>
+    <script src="../../static/assets/laydate/laydate.js" type="text/javascript"
+            th:src="@{/assets/laydate/laydate.js}"></script>
+    <!-- 提示工具 -->
+    <link rel="stylesheet" type="text/css" href="../../static/css/toastr.css" th:href="@{/css/toastr.css}"/>
+    <script type="text/javascript" src="../../static/js/toastr.min.js" th:src="@{/js/toastr.min.js}"></script>
+
+    <!-- 下拉框组件 -->
+    <link rel="stylesheet" href="../../static/chosen/chosen.css" th:href="@{/chosen/chosen.css}">
+    <script type="text/javascript" src="../../static/chosen/chosen.jquery.js"
+            th:src="@{/chosen/chosen.jquery.js}"></script>
+    <script src="../../static/js/myJS.js" th:src="@{/js/myJS.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(function () {
+            //使提示信息居中显示
+            toastr.options.positionClass = 'toast-center-center';
+        })
+        var basePath = [[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]];
+
+    </script>
+    <style type="text/css">
+        .corPerTable tbody tr td {
+            padding-left: 5px;
+            padding-top: 5px;
+        }
+
+        .corPerTable tbody tr td span {
+            padding-left: 10px;
+            padding-right: 2px;
+        }
+
+        .fileDiv {
+            margin-left: 20px;
+            width: 140px;
+            height: 140px;
+            position: relative;
+        }
+
+        .fileDiv .close_file_img {
+            position: absolute;
+            display: none;
+            padding: 2px 6px;
+            right: -20px;
+            top: 5px;
+        }
+
+        .fileDiv .close_file_img:hover {
+            cursor: pointer;
+        }
+
+        .fileDefaultDiv {
+            display: none;
+            border: 1px solid #ccc;
+            text-align: center;
+            font-size: 45px;
+            height: 140px;
+            color: #ccc;
+            line-height: 140px;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        }
+    </style>
+</head>
+<body>
+<div id="content" style="padding: 20px;min-width: 1000px;">
+    <form id="addCorPerForm" role="form" method="post">
+        <h3>基本信息</h3>
+        <table class="corPerTable">
+            <tr>
+                <td style="width: auto;"><span class="f4">矫正单位</span>:</td>
+                <td style="width: 180px;">
+                    <input type="hidden" name="corOrgId"/>
+                    <input type="hidden" name="manId"/>
+                    <input type="text" class="form-control input-sm" disabled
+                           th:value="${corPer.corPerId}"/>
+                </td>
+                <td><span class="f2">姓名</span>:</td>
+                <td style="width: 180px;">
+                    <input type="text" name="corPerName" th:value="${corPer.corPerName}" disabled
+                           class="form-control input-sm"/>
+                </td>
+                <td><span class="f3">曾用名</span>:</td>
+                <td style="width: 180px;">
+                    <input type="text" name="corPerNames" th:value="${corPer.corPerNames}"
+                           class="form-control input-sm" disabled/>
+                </td>
+                <td rowspan="4" width="160px" style="text-align: right">
+                    <div class="fileDiv">
+                        <div class="close_file_img" onclick="clearAway(this)">X</div>
+                        <div>
+                            <img src="" th:src="@{/images/CorPerPic/{corPerPic}(corPerPic=${corPer.corPerPic})}"
+                                 width="140px" height="140px"/>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="f3">手机号</span>:</td>
+                <td>
+                    <input type="text" maxlength="11" th:value="${corPer.corPerPhone}" class="form-control input-sm"
+                           name="corPerPhone" disabled/>
+                </td>
+                <td><span class="f4">身份证号</span>:</td>
+                <td>
+                    <input type="text" name="corPerCarid" th:value="${corPer.corPerCarid}" maxlength="18"
+                           class="form-control input-sm" disabled/>
+                </td>
+                <td><span class="f2">民族</span>:</td>
+                <td>
+                    <input type="text" name="nationality" th:value="${corPer.nationality}"
+                           class="form-control input-sm" disabled/>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="f4">政治面貌</span>:</td>
+                <td>
+                    <input type="text" name="proliticsStatus" th:value="${corPer.proliticsStatus}"
+                           class="form-control input-sm" disabled/>
+                </td>
+                <td><span class="f4">文化程度</span>:</td>
+                <td>
+                    <input type="text" name="standardOfCulture" th:value="${corPer.standardOfCulture}"
+                           class="form-control input-sm" disabled/>
+                </td>
+                <td><span class="f4">婚姻状况</span>:</td>
+                <td>
+                    <input type="text" name="marriage" th:value="${corPer.marriage}" disabled
+                           class="form-control input-sm"/>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="f2">职业</span>:</td>
+                <td>
+                    <input type="text" name="profession" th:value="${corPer.profession}"
+                           class="form-control input-sm" disabled/>
+                </td>
+                <td><span class="f2">户籍</span>:</td>
+                <td>
+                    <input type="text" name="censusRegister" th:value="${corPer.censusRegister}"
+                           class="form-control input-sm" disabled/>
+                </td>
+                <td><span class="f2">籍贯</span>:</td>
+                <td>
+                    <input type="text" name="nativePlace" th:value="${corPer.nativePlace}"
+                           class="form-control input-sm" disabled/>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="f4">判决机构</span>:</td>
+                <td>
+                    <input type="text" th:value="${corPer.judgmentOrg.orgName}"
+                           class="form-control input-sm" disabled/>
+                </td>
+                <td><span class="f4">执行类别</span>:</td>
+                <td>
+                    <input type="text" name="performCategory" th:value="${corPer.performCategory}"
+                           class="form-control input-sm" disabled/>
+                </td>
+                <td><span class="f4">户籍地址</span>:</td>
+                <td colspan="2">
+                    <input type="text" name="marrigerAddress" th:value="${corPer.marrigerAddress}"
+                           class="form-control input-sm" disabled/>
+                </td>
+
+            </tr>
+            <tr>
+                <td><span class="f2">罪名</span>:</td>
+                <td>
+                    <input type="text" name="accusation" th:value="${corPer.accusation}" disabled
+                           class="form-control input-sm"/>
+                </td>
+                <td><span class="f4">判决书号</span>:</td>
+                <td>
+                    <input type="text" name="judgmentNum" th:value="${corPer.judgmentNum}"
+                           class="form-control input-sm" disabled/>
+                </td>
+                <td><span class="f4">居住地址</span>:</td>
+                <td colspan="2">
+                    <input type="text" name="address" th:value="${corPer.address}" disabled
+                           class="form-control input-sm"/>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="f3">附加刑</span>:</td>
+                <td>
+                    <input type="text" name="additionPenal" th:value="${corPer.additionPenal}"
+                           class="form-control input-sm" disabled/>
+                </td>
+                <td><span class="f4">判决日期</span>:</td>
+                <td>
+                    <input type="text" class="form-control input-sm"
+                           th:value="${#dates.format(corPer.judgmentTime,'yyyy-MM-dd')}" disabled name="judgmentTime"
+                           id="judgmentTime"/>
+                </td>
+                <td><span class="f2">刑期</span>:</td>
+                <td colspan="2">
+                    <input type="text" name="penalDeadline" th:value="${corPer.penalDeadline}"
+                           class="form-control input-sm" disabled/>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="f4">原判刑期</span>:</td>
+                <td>
+                    <input type="text" name="judgmentDeadline" th:value="${corPer.judgmentDeadline}"
+                           class="form-control input-sm" disabled/>
+                </td>
+                <td><span class="f4">入矫日期</span>:</td>
+                <td>
+                    <input type="text" class="form-control input-sm"
+                           th:value="${#dates.format(corPer.correctBeginTime,'yyyy-MM-dd')}" name="correctBeginTime"
+                           id="correctBeginTime" disabled/>
+                </td>
+                <td><span class="f4">矫正期限</span>:</td>
+                <td colspan="2">
+                    <input type="text" name="correctDeadline" th:value="${corPer.correctDeadline}"
+                           class="form-control input-sm" disabled/>
+                </td>
+            </tr>
+        </table>
+        <h3>社会关系</h3>
+        <table id="corPerTableRel" class="corPerTable">
+            <tbody>
+            <tr th:each="corPerRel:${corPer.corPerRelList}">
+                <td>
+                    <span class="f2">姓名</span>:
+                </td>
+                <td>
+                    <input type="text" name="corPerRelName" th:value="${corPerRel.corPerRelName}" disabled
+                           class="form-control input-sm"/>
+                </td>
+                <td style="width: auto;">
+                    <span class="f4">工作单位</span>:
+                </td>
+                <td>
+                    <input type="text" name="workUnit" th:value="${corPerRel.workUnit}" disabled
+                           class="form-control input-sm"/></td>
+                <td>
+                    <span class="f4">联系方式</span>:
+                </td>
+                <td>
+                    <input type="text" name="corPerRelPhone" th:value="${corPerRel.corPerRelPhone}" disabled
+                           class="form-control input-sm"/></td>
+                <td>
+                    <span>关 系</span>:
+                </td>
+                <td>
+                    <input type="text" name="relation" th:value="${corPerRel.relation}" disabled
+                           title="与矫正人员的关系（如‘父亲’，‘母亲’）"
+                           class="form-control input-sm"/>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+
+
+    </form>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    $(function () {
+
+    })
+
+
+</script>
+</body>
+</html>

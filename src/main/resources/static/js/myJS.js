@@ -1,6 +1,7 @@
 //机构信息数据
 var orgData;
 var manData;
+var ManorgId;
 //保存创建机构信息下拉框时的html结构
 var orgSelectHtml = "";
 
@@ -10,15 +11,15 @@ var orgSelectHtml = "";
  */
 function foundOrgSelect(obj) {
     orgSelectHtml = "";
-    foundOrgSelects(1, 1);
-    $(obj).html(foundCurrentOrgSelect(1)+orgSelectHtml);
+    foundOrgSelects(ManorgId, 1);
+    $(obj).html(foundCurrentOrgSelect(1) + orgSelectHtml);
 }
 
 /**
  * 创建一个当前机构的下拉框
  */
 function foundCurrentOrgSelect(orgId) {
-    var html="<select>"
+    var html = "<select>"
     for (var i = 0; i < orgData.length; i++) {
         if (orgData[i].orgId == orgId) {
             html += "<option value='" + orgData[i].orgId + "' selected>" + orgData[i].orgName + "</option></select>&nbsp;&nbsp;";
@@ -27,6 +28,7 @@ function foundCurrentOrgSelect(orgId) {
     }
 
 }
+
 /**
  * 使用递归创建机构信息下拉框
  * @param orgId 当前用户机构的Id
@@ -85,9 +87,9 @@ function getOrgSelectText(obj) {
     }
     $(obj).nextAll().html("<option>全部</option>");
     $(obj).next().html(seHtml);
-    var SelectText=$(obj).find("option:selected").text();
-    if(SelectText=="全部"){
-        SelectText=$(obj).prev().find("option:selected").text();
+    var SelectText = $(obj).find("option:selected").text();
+    if (SelectText == "全部") {
+        SelectText = $(obj).prev().find("option:selected").text();
     }
     selectOrgDataTable(SelectText);
 }
@@ -97,25 +99,54 @@ function getOrgSelectText(obj) {
  * @param obj
  */
 function getOrgId(obj) {
-    var SelectText=$(obj).find("option:selected").text();
-    var orgIdInput=$(obj).parents("form").find(":input[name='orgId']");
-    if(SelectText=="全部"){
+    var SelectText = $(obj).find("option:selected").text();
+    var orgIdInput = $(obj).parents("form").find(":input[name='orgId']");
+    if (SelectText == "全部") {
         orgIdInput.val($(obj).prev().find("option:selected").val());
-    }else {
+    } else {
         orgIdInput.val($(obj).find("option:selected").val());
     }
 }
+
 /**
- * 获取数据库中的机构信息
+ * 获取数据库中可管理的机构信息
  */
 function getOrgData() {
     $.ajax({
-        url: basePath+"/org/queryAllOrg",
+        url: basePath + "/org/queryManAllOrg",
         type: "post",
         dataJson: "json",
         async: false,
         success: function (data) {
             orgData = data.aaData;
+        }
+    });
+}
+
+/**
+ * 设置下拉框
+ * @param obj 要填充的下拉框
+ * @param type 下拉框需要的部门类型（0 司法所,1 法院）
+ */
+function getOrgSelect(obj, type, orgId) {
+    $.ajax({
+        url: basePath + "/org/queryAllOrg",
+        type: "post",
+        dataJson: "json",
+        async: false,
+        success: function (data) {
+            var orgList = data.aaData;
+            var html = "";
+            for (var i = 0; i < orgList.length; i++) {
+                if (orgList[i].orgType == type) {
+                    html += "<option value='" + orgList[i].orgId + "'";
+                    if (orgList[i].orgId == orgId) {
+                        html += " selected";
+                    }
+                    html += ">" + orgList[i].orgName + "</option>";
+                }
+            }
+            $(obj).html(html);
         }
     });
 }

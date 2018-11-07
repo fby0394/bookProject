@@ -55,6 +55,8 @@
             where orgId=#{orgId}
         </if>
     </select>
+
+
     <insert id="addOrg" parameterType="com.cor.aaa.entity.Organization">
         insert into organization(orgName,superiorOrg,orgType) values(#{orgName},#{superiorOrg},#{orgType})
     </insert>

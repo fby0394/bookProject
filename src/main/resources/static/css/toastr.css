@@ -1,3 +1,17 @@
+.f4 {
+  text-align: center;
+  width: 4em;
+}
+
+.f3 {
+  letter-spacing: 0.5em;
+  margin-right: -0.5em;
+}
+
+.f2 {
+  letter-spacing: 2em;
+  margin-right: -2em;
+}
 .toast-title {
   font-weight: bold;
 }
